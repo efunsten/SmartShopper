@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/getGPS_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="getLocation"
+            android:text="@string/get_gps" />
+
+        <TextView
+            android:id="@+id/gps_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gps_address"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+    
+	<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+	    <Button
+	        android:id="@+id/scan_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="startScan"
+	        android:text="@string/scan_button" />
+	    
+	    <TextView
+	        android:id="@+id/scan_code"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="TextView" />
+	
+	</LinearLayout>
+	
+	<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+        
+	    <Button
+	        android:id="@+id/addItem_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="addItem"
+	        android:text="Add Item" />
+	    
+	    <TextView
+	        android:id="@+id/item_info"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="TextView" />
+	
+	</LinearLayout>
+
+	<Button
+	    android:id="@+id/button1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="@string/database"
+	    android:onClick="startJokes" />
+
+</LinearLayout>

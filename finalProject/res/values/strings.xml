@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">finalProject</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="get_gps">Get Address</string>
+    <string name="scan_button">Scan Code</string>
+    <string name="gps_address">Address</string>
+    <string name="Fragmenttab1">Tab 1</string>
+    <string name="Fragmenttab2">Tab 2</string>
+    <string name="enter_item">Enter an Item</string>
+    <string name="enter_price">Enter a Price</string>
+    <string name="enter_quantity">Enter  a Quantity</string>
+    <string name="database">Database Example</string>
+
+</resources>

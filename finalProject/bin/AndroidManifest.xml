@@ -8,14 +8,17 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    
-    <application
+    <uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+   
+	<application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Sherlock.Light" >
-        <activity
-            android:name="com.example.finalproject.MainActivity"
+        
+	     <activity
+            android:name="com.example.finalproject.ItemList"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +27,11 @@
             </intent-filter>
         </activity>
         
+        <activity
+            android:name="com.example.finalproject.ItemDetails" >
+
+        </activity>
+
         <meta-data android:name="com.google.android.gms.version"
            android:value="@integer/google_play_services_version" />
     </application>

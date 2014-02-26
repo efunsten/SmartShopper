@@ -1,26 +1,31 @@
 package com.example.finalproject;
 
+import android.location.Location;
+
 public class ShoppingItem {
-	String mDate;
-	String mItem;
-	float mPrice;
-	float mQuantity;
+	String date;
+	String name;
+	float price;
+	float quantity;
+	Location location;
 	
 	public ShoppingItem() {
-		mDate = "";
-		mItem = "";
-		mPrice = 0;
-		mQuantity = 0;
+		date = "";
+		name = "";
+		price = 0;
+		quantity = 0;
+		location = null;
 	}
 	
-	public ShoppingItem(String date, String item, float price, float quantity) {
-		mDate = date;
-		mItem = item;
-		mPrice = price;
-		mQuantity = quantity;
+	public ShoppingItem(String date, String name, float price, float quantity,Location location) {
+		this.date = date;
+		this.name = name;
+		this.price = price;
+		this.quantity = quantity;
+		this.location = location;
 	}
 	
 	public void setPrice(float price) {
-		mPrice = price;
+		this.price = price;
 	}
 }

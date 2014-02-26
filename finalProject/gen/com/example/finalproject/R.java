@@ -1147,7 +1147,6 @@ containing a value of this type.
         public static final int abs__textButton=0x7f050017;
         public static final int abs__title=0x7f05001f;
         public static final int abs__up=0x7f05000f;
-        public static final int action_settings=0x7f050047;
         public static final int addItem_button=0x7f050043;
         public static final int button1=0x7f050045;
         public static final int chart=0x7f050046;
@@ -1162,7 +1161,10 @@ containing a value of this type.
         public static final int homeAsUp=0x7f05000a;
         public static final int hybrid=0x7f050004;
         public static final int item_info=0x7f050044;
+        public static final int itemlist=0x7f050047;
         public static final int listMode=0x7f050006;
+        public static final int menu_additem=0x7f050048;
+        public static final int menu_favorites=0x7f050049;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
         public static final int satellite=0x7f050002;
@@ -1211,11 +1213,12 @@ containing a value of this type.
         public static final int dialog_additem=0x7f030016;
         public static final int fragmenttab1=0x7f030017;
         public static final int fragmenttab2=0x7f030018;
-        public static final int sherlock_spinner_dropdown_item=0x7f030019;
-        public static final int sherlock_spinner_item=0x7f03001a;
+        public static final int item_list=0x7f030019;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001a;
+        public static final int sherlock_spinner_item=0x7f03001b;
     }
     public static final class menu {
-        public static final int main=0x7f0b0000;
+        public static final int mainmenu=0x7f0b0000;
     }
     public static final class string {
         public static final int Fragmenttab1=0x7f06002d;
@@ -1260,6 +1263,8 @@ containing a value of this type.
          */
         public static final int abs__shareactionprovider_share_with_application=0x7f060021;
         public static final int action_settings=0x7f060028;
+        public static final int additem_menu=0x7f060035;
+        public static final int addlocation_menuitem=0x7f060033;
         public static final int app_name=0x7f060027;
         /**   Title for notification shown when GooglePlayServices needs to be
         enabled for a application to work. [CHAR LIMIT=70] 
@@ -1359,9 +1364,11 @@ containing a value of this type.
         public static final int enter_item=0x7f06002f;
         public static final int enter_price=0x7f060030;
         public static final int enter_quantity=0x7f060031;
+        public static final int favorites_menu=0x7f060036;
         public static final int get_gps=0x7f06002a;
         public static final int gps_address=0x7f06002c;
         public static final int hello_world=0x7f060029;
+        public static final int location_menuitem=0x7f060034;
         public static final int scan_button=0x7f06002b;
     }
     public static final class style {

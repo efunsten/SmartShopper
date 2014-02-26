@@ -13,5 +13,9 @@
     <string name="enter_price">Enter a Price</string>
     <string name="enter_quantity">Enter  a Quantity</string>
     <string name="database">Database Example</string>
+    <string name="addlocation_menuitem">Add Location</string>
+    <string name="location_menuitem">Location</string>
+    <string name="additem_menu">Add Item</string>
+    <string name="favorites_menu">Favorites</string>
 
 </resources>

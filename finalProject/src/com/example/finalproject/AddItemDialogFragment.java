@@ -71,7 +71,8 @@ public class AddItemDialogFragment extends SherlockDialogFragment{
 							new ShoppingItem(mDateView.getText().toString(), 
 											 mItemText.getText().toString(), 
 											 Float.parseFloat(mPriceText.getText().toString()),
-											 Float.parseFloat(mQuantityText.getText().toString())));
+											 Float.parseFloat(mQuantityText.getText().toString()),
+											 ItemList.mLocation));
 				}
 			})
 			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

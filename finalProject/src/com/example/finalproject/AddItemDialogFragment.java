@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.app.SherlockDialogFragment;
+import com.parse.ParseGeoPoint;
 
 public class AddItemDialogFragment extends SherlockDialogFragment{
 
@@ -72,7 +73,7 @@ public class AddItemDialogFragment extends SherlockDialogFragment{
 											 mItemText.getText().toString(), 
 											 Float.parseFloat(mPriceText.getText().toString()),
 											 Float.parseFloat(mQuantityText.getText().toString()),
-											 ItemList.mLocation));
+											 new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude())));
 				}
 			})
 			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

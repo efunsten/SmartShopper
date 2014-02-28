@@ -13,6 +13,8 @@ import android.provider.Settings;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -34,6 +36,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
@@ -92,7 +95,7 @@ public class ItemList extends SherlockFragmentActivity implements
 				  new ParseQueryAdapter<ParseObject>(this, new ParseQueryAdapter.QueryFactory<ParseObject>() {
 				    public ParseQuery<ParseObject> create() {
 				      // Here we can configure a ParseQuery to our heart's desire.
-				      ParseQuery query = new ParseQuery("Item");
+				      ParseQuery query = new ParseQuery(ItemList.ITEM_CLASS);
 				      return query;
 				    }
 				  });
@@ -101,7 +104,20 @@ public class ItemList extends SherlockFragmentActivity implements
 		
 		mListView = (ListView) findViewById(R.id.itemlist);
 		mListView.setAdapter(mItemAdapter);
-		
+		mListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				ParseObject object = mItemAdapter.getItem(position);
+				ShoppingItem item = new ShoppingItem(object.getString(ITEM_KEY_DATE), object.getString(ITEM_KEY_NAME), 
+						(float)object.getDouble(ITEM_KEY_PRICE), (float)object.getDouble(ITEM_KEY_QUANTITY), object.getParseGeoPoint(ITEM_KEY_LOCATION));
+				Intent intent = new Intent(getApplicationContext(), ItemDetails.class);
+				intent.putExtra(ITEM_CLASS, new Gson().toJson(item));
+				startActivity(intent);
+			}
+			
+		});
 		
 		mLocationRequest = LocationRequest.create();
 		mLocationClient = new LocationClient(this, this, this);
@@ -122,6 +138,9 @@ public class ItemList extends SherlockFragmentActivity implements
 		//menu.getItem(0).setTitle(getMenuTitleChange());
 		this.mMenu = menu;
 		ItemList.mLocation = this.mLocationClient.getLastLocation();
+		if(ItemList.mLocation == null) {
+			return true;
+		}
 		ParseGeoPoint point = new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude());
 		ParseQuery<ParseObject> query = ParseQuery.getQuery(LOCATION_CLASS);
 		query.whereWithinKilometers(LOCATION_KEY_GEOPOINT, point, 0.1);
@@ -262,8 +281,7 @@ public class ItemList extends SherlockFragmentActivity implements
 			itemEntry.put(ItemList.ITEM_KEY_NAME, sItem.name);
 			itemEntry.add(ItemList.ITEM_KEY_PRICE, sItem.price);
 			itemEntry.put(ItemList.ITEM_KEY_QUANTITY, sItem.quantity);
-			ParseGeoPoint point = new ParseGeoPoint(sItem.location.getLatitude(), sItem.location.getLongitude());
-			itemEntry.put(ItemList.ITEM_KEY_LOCATION, point);
+			itemEntry.put(ItemList.ITEM_KEY_LOCATION, sItem.location);
 			itemEntry.add(ItemList.ITEM_KEY_DATE, sItem.date);
 			try {
 				itemEntry.save();

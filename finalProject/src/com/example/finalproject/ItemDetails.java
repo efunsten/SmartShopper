@@ -16,6 +16,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.google.gson.Gson;
 
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -41,7 +42,7 @@ public class ItemDetails extends SherlockFragmentActivity implements
 	Fragment fragmentTab2 = new FragmentTab2();
 	private LocationClient mLocationClient;
 	private Location mLocation;
-	
+	ShoppingItem mItem = null;
 	
 	
 	@Override
@@ -64,14 +65,17 @@ public class ItemDetails extends SherlockFragmentActivity implements
 		
 		mLocationClient = new LocationClient(this, this, this);
 		Parse.initialize(this, "RCIm6xY3zgCw0sguu3OtbE0e1aIdd7dBjqhnNrQV", "kwjP5rVdVPPBlSf3PljblCeewigUmTUbto0GKwG4");
+		Intent intent = getIntent();
+		Bundle extras = intent.getExtras();
+		if(extras != null) {
+			mItem = new Gson().fromJson(extras.getString(ItemList.ITEM_CLASS), ShoppingItem.class);
+			if(mItem != null)
+				Log.d("Item", mItem.name);
+		}
 	}
 	
 	public void addItem(View view) {
-		AddItemDialogFragment addItemDialog = new AddItemDialogFragment();
-		addItemDialog.show(getSupportFragmentManager(), "dialog");
-		ParseObject testObject = new ParseObject("NewTest");
-		testObject.put("foo", "bar");
-		testObject.saveInBackground();
+		/**/
 	}
 	
 	public void getLocation(View view) {

@@ -1,13 +1,14 @@
 package com.example.finalproject;
 
-import android.location.Location;
+import com.parse.ParseGeoPoint;
+
 
 public class ShoppingItem {
 	String date;
 	String name;
 	float price;
 	float quantity;
-	Location location;
+	ParseGeoPoint location;
 	
 	public ShoppingItem() {
 		date = "";
@@ -17,7 +18,7 @@ public class ShoppingItem {
 		location = null;
 	}
 	
-	public ShoppingItem(String date, String name, float price, float quantity,Location location) {
+	public ShoppingItem(String date, String name, float price, float quantity,ParseGeoPoint location) {
 		this.date = date;
 		this.name = name;
 		this.price = price;

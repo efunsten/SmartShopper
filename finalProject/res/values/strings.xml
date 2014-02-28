@@ -17,5 +17,9 @@
     <string name="location_menuitem">Location</string>
     <string name="additem_menu">Add Item</string>
     <string name="favorites_menu">Favorites</string>
+    <string name="login_button">Login</string>
+    <string name="register_button">Register</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
 
 </resources>

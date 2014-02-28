@@ -1152,8 +1152,10 @@ containing a value of this type.
         public static final int chart=0x7f050046;
         public static final int disableHome=0x7f05000d;
         public static final int editText_item=0x7f05003a;
+        public static final int editText_password=0x7f050049;
         public static final int editText_price=0x7f05003c;
         public static final int editText_quantity=0x7f05003e;
+        public static final int editText_username=0x7f050048;
         public static final int edit_query=0x7f05002a;
         public static final int fragment_container=0x7f050036;
         public static final int getGPS_button=0x7f05003f;
@@ -1163,10 +1165,12 @@ containing a value of this type.
         public static final int item_info=0x7f050044;
         public static final int itemlist=0x7f050047;
         public static final int listMode=0x7f050006;
-        public static final int menu_additem=0x7f050048;
-        public static final int menu_favorites=0x7f050049;
+        public static final int login_button=0x7f05004a;
+        public static final int menu_additem=0x7f05004c;
+        public static final int menu_favorites=0x7f05004d;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
+        public static final int register_button=0x7f05004b;
         public static final int satellite=0x7f050002;
         public static final int scan_button=0x7f050041;
         public static final int scan_code=0x7f050042;
@@ -1214,8 +1218,9 @@ containing a value of this type.
         public static final int fragmenttab1=0x7f030017;
         public static final int fragmenttab2=0x7f030018;
         public static final int item_list=0x7f030019;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001a;
-        public static final int sherlock_spinner_item=0x7f03001b;
+        public static final int login_layout=0x7f03001a;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001b;
+        public static final int sherlock_spinner_item=0x7f03001c;
     }
     public static final class menu {
         public static final int mainmenu=0x7f0b0000;
@@ -1369,7 +1374,11 @@ containing a value of this type.
         public static final int gps_address=0x7f06002c;
         public static final int hello_world=0x7f060029;
         public static final int location_menuitem=0x7f060034;
+        public static final int login_button=0x7f060037;
+        public static final int password_hint=0x7f06003a;
+        public static final int register_button=0x7f060038;
         public static final int scan_button=0x7f06002b;
+        public static final int username_hint=0x7f060039;
     }
     public static final class style {
         /** 

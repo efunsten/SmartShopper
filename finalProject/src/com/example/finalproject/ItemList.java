@@ -13,12 +13,14 @@ import android.provider.Settings;
 import android.support.v4.view.MenuItemCompat;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
@@ -98,9 +100,34 @@ public class ItemList extends SherlockFragmentActivity implements
 				      ParseQuery query = new ParseQuery(ItemList.ITEM_CLASS);
 				      return query;
 				    }
-				  });
+				  }) {
+			@Override
+			public View getItemView(ParseObject object, View v, ViewGroup parent) {
+			  if (v == null) {
+			    v = View.inflate(getContext(), R.layout.item_view, null);
+			  }
+			 
+			  // Take advantage of ParseQueryAdapter's getItemView logic for
+			  // populating the main TextView/ImageView.
+			  // The IDs in your custom layout must match what ParseQueryAdapter expects
+			  // if it will be populating a TextView or ImageView for you.
+			  super.getItemView(object, v, parent);
+			 
+			  // Do additional configuration before returning the View.
+			  TextView itemName = (TextView) v.findViewById(R.id.textView_name);
+			  TextView priceView = (TextView) v.findViewById(R.id.textView_price);
+			  TextView unitPriceView = (TextView) v.findViewById(R.id.textView_pricePerUnit);
+			  List<Double> priceList = object.getList(ITEM_KEY_PRICE);
+			  Number price = priceList.get(priceList.size()-1);
+		      itemName.setText(object.getString(ItemList.ITEM_KEY_NAME));
+			  priceView.setText(Double.toString(price.doubleValue()));
+			  unitPriceView.setText(Double.toString(price.doubleValue() / object.getDouble(ITEM_KEY_QUANTITY)));
+			  return v;
+			}
+			
+		};
 		
-		mItemAdapter.setTextKey(ItemList.ITEM_KEY_NAME);
+		//mItemAdapter.setTextKey(ItemList.ITEM_KEY_NAME);
 		
 		mListView = (ListView) findViewById(R.id.itemlist);
 		mListView.setAdapter(mItemAdapter);
@@ -241,6 +268,10 @@ public class ItemList extends SherlockFragmentActivity implements
         mLocationClient.disconnect();
         super.onStop();
     }
+	
+	
+	
+	
 	
 	private String getMenuTitleChange() {
 		return null;

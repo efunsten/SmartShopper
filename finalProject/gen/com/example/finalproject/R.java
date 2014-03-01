@@ -1101,11 +1101,15 @@ containing a value of this type.
         public static final int common_signin_btn_text_normal_light=0x7f020085;
         public static final int common_signin_btn_text_pressed_dark=0x7f020086;
         public static final int common_signin_btn_text_pressed_light=0x7f020087;
-        public static final int ic_launcher=0x7f020088;
-        public static final int ic_plusone_medium_off_client=0x7f020089;
-        public static final int ic_plusone_small_off_client=0x7f02008a;
-        public static final int ic_plusone_standard_off_client=0x7f02008b;
-        public static final int ic_plusone_tall_off_client=0x7f02008c;
+        public static final int favorite=0x7f020088;
+        public static final int ic_launcher=0x7f020089;
+        public static final int ic_menu_refresh=0x7f02008a;
+        public static final int ic_plusone_medium_off_client=0x7f02008b;
+        public static final int ic_plusone_small_off_client=0x7f02008c;
+        public static final int ic_plusone_standard_off_client=0x7f02008d;
+        public static final int ic_plusone_tall_off_client=0x7f02008e;
+        public static final int rate_star_med_off=0x7f02008f;
+        public static final int rate_star_med_on=0x7f020090;
     }
     public static final class id {
         public static final int abs__action_bar=0x7f050024;
@@ -1149,13 +1153,15 @@ containing a value of this type.
         public static final int abs__up=0x7f05000f;
         public static final int addItem_button=0x7f050043;
         public static final int button1=0x7f050045;
+        public static final int button_update=0x7f05004b;
         public static final int chart=0x7f050046;
+        public static final int checkBox_favorite=0x7f05004c;
         public static final int disableHome=0x7f05000d;
         public static final int editText_item=0x7f05003a;
-        public static final int editText_password=0x7f050049;
+        public static final int editText_password=0x7f05004e;
         public static final int editText_price=0x7f05003c;
         public static final int editText_quantity=0x7f05003e;
-        public static final int editText_username=0x7f050048;
+        public static final int editText_username=0x7f05004d;
         public static final int edit_query=0x7f05002a;
         public static final int fragment_container=0x7f050036;
         public static final int getGPS_button=0x7f05003f;
@@ -1165,12 +1171,12 @@ containing a value of this type.
         public static final int item_info=0x7f050044;
         public static final int itemlist=0x7f050047;
         public static final int listMode=0x7f050006;
-        public static final int login_button=0x7f05004a;
-        public static final int menu_additem=0x7f05004c;
-        public static final int menu_favorites=0x7f05004d;
+        public static final int login_button=0x7f05004f;
+        public static final int menu_additem=0x7f050051;
+        public static final int menu_favorites=0x7f050052;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int register_button=0x7f05004b;
+        public static final int register_button=0x7f050050;
         public static final int satellite=0x7f050002;
         public static final int scan_button=0x7f050041;
         public static final int scan_code=0x7f050042;
@@ -1184,6 +1190,9 @@ containing a value of this type.
         public static final int textView4=0x7f05003d;
         public static final int textView5=0x7f05003b;
         public static final int textView_date=0x7f050038;
+        public static final int textView_name=0x7f050048;
+        public static final int textView_price=0x7f050049;
+        public static final int textView_pricePerUnit=0x7f05004a;
         public static final int useLogo=0x7f050008;
         public static final int wrap_content=0x7f050005;
     }
@@ -1218,9 +1227,10 @@ containing a value of this type.
         public static final int fragmenttab1=0x7f030017;
         public static final int fragmenttab2=0x7f030018;
         public static final int item_list=0x7f030019;
-        public static final int login_layout=0x7f03001a;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001b;
-        public static final int sherlock_spinner_item=0x7f03001c;
+        public static final int item_view=0x7f03001a;
+        public static final int login_layout=0x7f03001b;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001c;
+        public static final int sherlock_spinner_item=0x7f03001d;
     }
     public static final class menu {
         public static final int mainmenu=0x7f0b0000;

@@ -47,13 +47,15 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.SaveCallback;
 
 
 public class ItemList extends SherlockFragmentActivity implements 
 	GooglePlayServicesClient.ConnectionCallbacks,
 	GooglePlayServicesClient.OnConnectionFailedListener,
 	LocationListener,
-	AddItemDialogFragment.NoticeDialogListener{
+	AddItemDialogFragment.NoticeDialogListener,
+	AddLocationDialogFragment.NoticeDialogListener{
 
 	protected Menu mMenu;
 	protected ListView mListView;
@@ -68,21 +70,28 @@ public class ItemList extends SherlockFragmentActivity implements
 	protected static final String ITEM_KEY_QUANTITY = "quantity";
 	protected static final String ITEM_KEY_LOCATION = "location";
 	protected static final String ITEM_KEY_DATE = "date";
+	protected static final String ITEM_KEY_ID = "objectId";
 	
 	protected static final String LOCATION_CLASS = "Location";
 	protected static final String LOCATION_KEY_PLACE = "place";
 	protected static final String LOCATION_KEY_GEOPOINT = "point";
+	protected static final String LOCATION_KEY_ADDRESS = "address";
 	
 	protected static final String USER_CLASS = "User";
 	protected static final String USER_KEY_FAVORITES = "favorites";
 
 	protected boolean mFavorites = false;
 	
+	protected static final int NEW_LOCATION = 0;
+	public static ParseObject mParseLocation = null;
 	ParseQueryAdapter<ParseObject> mItemAdapter;
 	ArrayAdapter<String> mLocationAdapter;
 	SpinnerAdapter mSpinnerAdapter;
 	ActionBar mActionBar;
 	Spinner mSpinner;
+	List<ParseObject> mLocationList = null;
+	public static List<ParseObject> mNewLocations = null;
+	List<String> mFavoriteList = null;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,44 +102,10 @@ public class ItemList extends SherlockFragmentActivity implements
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		mActionBar.setDisplayShowTitleEnabled(false);
 		mActionBar.setDisplayShowHomeEnabled(false);
-		mItemAdapter =
-				  new ParseQueryAdapter<ParseObject>(this, new ParseQueryAdapter.QueryFactory<ParseObject>() {
-				    public ParseQuery<ParseObject> create() {
-				      // Here we can configure a ParseQuery to our heart's desire.
-				      ParseQuery query = new ParseQuery(ItemList.ITEM_CLASS);
-				      return query;
-				    }
-				  }) {
-			@Override
-			public View getItemView(ParseObject object, View v, ViewGroup parent) {
-			  if (v == null) {
-			    v = View.inflate(getContext(), R.layout.item_view, null);
-			  }
-			 
-			  // Take advantage of ParseQueryAdapter's getItemView logic for
-			  // populating the main TextView/ImageView.
-			  // The IDs in your custom layout must match what ParseQueryAdapter expects
-			  // if it will be populating a TextView or ImageView for you.
-			  super.getItemView(object, v, parent);
-			 
-			  // Do additional configuration before returning the View.
-			  TextView itemName = (TextView) v.findViewById(R.id.textView_name);
-			  TextView priceView = (TextView) v.findViewById(R.id.textView_price);
-			  TextView unitPriceView = (TextView) v.findViewById(R.id.textView_pricePerUnit);
-			  List<Double> priceList = object.getList(ITEM_KEY_PRICE);
-			  Number price = priceList.get(priceList.size()-1);
-		      itemName.setText(object.getString(ItemList.ITEM_KEY_NAME));
-			  priceView.setText(Double.toString(price.doubleValue()));
-			  unitPriceView.setText(Double.toString(price.doubleValue() / object.getDouble(ITEM_KEY_QUANTITY)));
-			  return v;
-			}
-			
-		};
 		
 		//mItemAdapter.setTextKey(ItemList.ITEM_KEY_NAME);
 		
 		mListView = (ListView) findViewById(R.id.itemlist);
-		mListView.setAdapter(mItemAdapter);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -148,6 +123,7 @@ public class ItemList extends SherlockFragmentActivity implements
 		
 		mLocationRequest = LocationRequest.create();
 		mLocationClient = new LocationClient(this, this, this);
+		mNewLocations = new ArrayList<ParseObject>();
 	}
 	
 	@Override
@@ -163,27 +139,41 @@ public class ItemList extends SherlockFragmentActivity implements
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		//menu.getItem(0).setTitle(getMenuTitleChange());
+		ArrayList<String> nearPlaces = new ArrayList<String>();
+		if(mLocationList != null) {
+			mLocationList.clear();
+		}
 		this.mMenu = menu;
-		ItemList.mLocation = this.mLocationClient.getLastLocation();
-		if(ItemList.mLocation == null) {
-			return true;
+		if(mLocationClient != null && mLocationClient.isConnected()) {
+			ItemList.mLocation = this.mLocationClient.getLastLocation();
 		}
-		ParseGeoPoint point = new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude());
-		ParseQuery<ParseObject> query = ParseQuery.getQuery(LOCATION_CLASS);
-		query.whereWithinKilometers(LOCATION_KEY_GEOPOINT, point, 0.1);
-		List<ParseObject> nearLocationList = null;
-		try {
-			nearLocationList = query.find();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		if(ItemList.mLocation != null) {
+			(new GetAddressTask(this)).execute(mLocation);
+			ParseGeoPoint point = new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude());
+			ParseQuery<ParseObject> query = ParseQuery.getQuery(LOCATION_CLASS);
+			query.whereWithinKilometers(LOCATION_KEY_GEOPOINT, point, 0.1);
+			
+			try {
+				mLocationList = query.find();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			   
+	        Log.d("location", "Retrieved " + mLocationList.size() + " locations");
+	        
+	        for(ParseObject location : mLocationList) {
+	        	nearPlaces.add(location.getString(LOCATION_KEY_PLACE));
+	        }
 		}
-		   
-        Log.d("location", "Retrieved " + nearLocationList.size() + " locations");
-        ArrayList<String> nearPlaces = new ArrayList<String>();
-        nearPlaces.add("Select Location");
-        for(ParseObject location : nearLocationList) {
-        	nearPlaces.add(location.getString(LOCATION_KEY_PLACE));
+		for(ParseObject location : mNewLocations) {
+			mLocationList.add(0, location);
+			nearPlaces.add(0, location.getString(LOCATION_KEY_PLACE));
+		}
+		
+        if(mLocationList == null || mLocationList.size() == 0) {
+        	nearPlaces.add("Select Location");
         }
         nearPlaces.add("Other");
         nearPlaces.add("Add Location");
@@ -211,22 +201,85 @@ public class ItemList extends SherlockFragmentActivity implements
 		      @Override
 		      public boolean onNavigationItemSelected(int position, long itemId) 
 		      {
-		         switch (position)
-		         {
-		             case 0:
-		            	 Log.d("menu", (String) mLocationAdapter.getItem(0));
-		            	 break;
+		    	  
+		    	  if(position == mLocationAdapter.getCount()-1) {
+		           	  addLocation();
 		          }
-		                   
+		          else if(position == mLocationAdapter.getCount()-2) {
+		         	  Intent intent = new Intent(getApplicationContext(), LocationList.class);
+		        	  startActivityForResult(intent, NEW_LOCATION);
+		          }
+		          else if(mLocationList != null && !mLocationList.isEmpty()) {
+		    		  mParseLocation = mLocationList.get(position);  
+		    		  updateItemListAdapter();
+		    	  }
+
 		          return true;
-		        }
-		     };
+		     }
+		   };
 		    
 	    mSpinner.setAdapter(mLocationAdapter); 
 	    Log.d("Item", (String) mLocationAdapter.getItem(0));
 		mActionBar.setListNavigationCallbacks(mLocationAdapter, mOnNavigationListener);
-		
+
 		return super.onPrepareOptionsMenu(menu);
+	}
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+		//mLocationClient.connect();
+		
+		if(requestCode == NEW_LOCATION) {
+			if(resultCode == RESULT_OK) {
+				supportInvalidateOptionsMenu();
+			}
+			else if(resultCode == RESULT_CANCELED) {
+				
+			}
+		}
+	}
+	
+	protected void updateItemListAdapter() {
+		if(mFavorites) {
+			mFavoriteList = Login.mCurrentUser.getList(ItemList.USER_KEY_FAVORITES);
+	    }
+		mItemAdapter =
+				  new ParseQueryAdapter<ParseObject>(this, new ParseQueryAdapter.QueryFactory<ParseObject>() {
+				    public ParseQuery<ParseObject> create() {
+				      // Here we can configure a ParseQuery to our heart's desire.
+					      ParseQuery query = new ParseQuery(ItemList.ITEM_CLASS);
+					      query.whereEqualTo(ITEM_KEY_LOCATION, mParseLocation);
+					      if(mFavorites) {
+					      query.whereContainedIn(ItemList.ITEM_KEY_ID, mFavoriteList);
+					      }
+					      return query;
+					    }
+				  }) {
+				@Override
+				public View getItemView(ParseObject object, View v, ViewGroup parent) {
+				  if (v == null) {
+				    v = View.inflate(getContext(), R.layout.item_view, null);
+				  }
+				 
+				  // Take advantage of ParseQueryAdapter's getItemView logic for
+				  // populating the main TextView/ImageView.
+				  // The IDs in your custom layout must match what ParseQueryAdapter expects
+				  // if it will be populating a TextView or ImageView for you.
+				  super.getItemView(object, v, parent);
+				 
+				  // Do additional configuration before returning the View.
+					  TextView itemName = (TextView) v.findViewById(R.id.textView_name);
+					  TextView priceView = (TextView) v.findViewById(R.id.textView_price);
+					  TextView unitPriceView = (TextView) v.findViewById(R.id.textView_pricePerUnit);
+					  List<Double> priceList = object.getList(ITEM_KEY_PRICE);
+					  Number price = priceList.get(priceList.size()-1);
+				      itemName.setText(object.getString(ItemList.ITEM_KEY_NAME));
+					  priceView.setText(Double.toString(price.doubleValue()));
+					  unitPriceView.setText(Double.toString(price.doubleValue() / object.getDouble(ITEM_KEY_QUANTITY)));
+					  return v;
+					}
+					
+				};
+	    mListView.setAdapter(mItemAdapter);
 	}
 	
 	@Override
@@ -237,7 +290,7 @@ public class ItemList extends SherlockFragmentActivity implements
 			break;
 		case R.id.menu_favorites:
 			this.mFavorites = !this.mFavorites;
-
+			updateItemListAdapter();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -268,10 +321,6 @@ public class ItemList extends SherlockFragmentActivity implements
         mLocationClient.disconnect();
         super.onStop();
     }
-	
-	
-	
-	
 	
 	private String getMenuTitleChange() {
 		return null;
@@ -305,6 +354,11 @@ public class ItemList extends SherlockFragmentActivity implements
 		addItemDialog.show(getSupportFragmentManager(), "dialog");
 	}
 	
+	public void addLocation() {
+		AddLocationDialogFragment addLocationDialog = new AddLocationDialogFragment();
+		addLocationDialog.show(getSupportFragmentManager(), "dialog");
+	}
+	
 	@Override
 	public void onDialogPositiveClick(SherlockDialogFragment dialog, ShoppingItem sItem) {
 		if(sItem.name != null && sItem.price > 0 && sItem.quantity > 0 && sItem.location != null) {
@@ -312,15 +366,18 @@ public class ItemList extends SherlockFragmentActivity implements
 			itemEntry.put(ItemList.ITEM_KEY_NAME, sItem.name);
 			itemEntry.add(ItemList.ITEM_KEY_PRICE, sItem.price);
 			itemEntry.put(ItemList.ITEM_KEY_QUANTITY, sItem.quantity);
-			itemEntry.put(ItemList.ITEM_KEY_LOCATION, sItem.location);
+			itemEntry.put(ItemList.ITEM_KEY_LOCATION, mParseLocation);
 			itemEntry.add(ItemList.ITEM_KEY_DATE, sItem.date);
-			try {
-				itemEntry.save();
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			mListView.setAdapter(mItemAdapter);
+			itemEntry.saveInBackground(new SaveCallback() {
+				   public void done(ParseException e) {
+				     if (e == null) {
+				    	 mListView.setAdapter(mItemAdapter);
+				     }
+				     else {
+				    	 Log.d("Error", e.getMessage() + " " + Integer.toString(e.getCode()));
+				     }
+				   }
+			});
 		}
 	}
 
@@ -330,4 +387,25 @@ public class ItemList extends SherlockFragmentActivity implements
 		
 	}
 
+	@Override
+	public void onDialogPositiveClick(SherlockDialogFragment dialog,
+			ShoppingLocation sLocation) {
+		if(sLocation.place != null & sLocation.address != null && sLocation.location != null) {
+			ParseObject locationEntry = new ParseObject(ItemList.LOCATION_CLASS);
+			locationEntry.put(ItemList.LOCATION_KEY_PLACE, sLocation.place);
+			locationEntry.put(ItemList.LOCATION_KEY_ADDRESS, sLocation.address);
+			locationEntry.put(ItemList.LOCATION_KEY_GEOPOINT, sLocation.location);
+			mParseLocation = locationEntry;
+			mNewLocations.add(mParseLocation);
+			
+			locationEntry.saveInBackground(new SaveCallback() {
+			   public void done(ParseException e) {
+			     if (e == null) {
+			    	 supportInvalidateOptionsMenu();
+			     }
+			   }
+			});
+			
+		}
+	}
 }

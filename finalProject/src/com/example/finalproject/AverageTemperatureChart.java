@@ -79,7 +79,7 @@ public class AverageTemperatureChart extends AbstractDemoChart {
     for (int i = 0; i < length; i++) {
       ((XYSeriesRenderer) renderer.getSeriesRendererAt(i)).setFillPoints(true);
     }
-    setChartSettings(renderer, "Average temperature", "Month", "Temperature", 0.5, 12.5, -10, 40,
+    setChartSettings(renderer, "", "Date", "Price", 0.5, 12.5, -10, 40,
         Color.LTGRAY, Color.LTGRAY);
     renderer.setXLabels(12);
     renderer.setYLabels(10);
@@ -93,7 +93,7 @@ public class AverageTemperatureChart extends AbstractDemoChart {
     XYMultipleSeriesDataset dataset = buildDataset(titles, x, values);
     XYSeries series = dataset.getSeriesAt(0);
     series.addAnnotation("Vacation", 6, 30);
-    GraphicalView view = ChartFactory.getLineChartView(context, dataset, renderer);
+    GraphicalView view = ChartFactory.getLineChartView(context, dataset, renderer);//ChartFactory.getTimeChartView(this, mDataset, mRenderer, "H:mm:ss");
     return view;
   }
 

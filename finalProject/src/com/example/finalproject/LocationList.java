@@ -30,7 +30,7 @@ public class LocationList extends SherlockActivity {
 		super.onCreate(savedInstanceState);
 		Parse.initialize(this, "RCIm6xY3zgCw0sguu3OtbE0e1aIdd7dBjqhnNrQV", "kwjP5rVdVPPBlSf3PljblCeewigUmTUbto0GKwG4");
 		setContentView(R.layout.location_list);
-		
+		getSupportActionBar().setTitle("Locations List");
 		
 		//mItemAdapter.setTextKey(ItemList.ITEM_KEY_NAME);
 		
@@ -42,7 +42,7 @@ public class LocationList extends SherlockActivity {
 					long id) {
 				ParseObject object = mLocationAdapter.getItem(position);
 				ItemList.mParseLocation = object;
-				ItemList.mNewLocations.add(0, object);
+				ItemList.mNewLocations.add(object);
 				setResult(RESULT_OK);
 				finish();
 			}

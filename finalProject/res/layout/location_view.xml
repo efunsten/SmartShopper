@@ -7,16 +7,22 @@
 
     <TextView
         android:id="@+id/textView_place"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:gravity="center"
         android:text="TextView" />
 
     <TextView
         android:id="@+id/textView_address"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:gravity="center"
         android:text="TextView" />
 
 </LinearLayout>

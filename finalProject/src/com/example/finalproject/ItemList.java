@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.content.Intent;
@@ -17,6 +18,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -40,6 +43,7 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseAnalytics;
 import com.parse.ParseException;
@@ -93,6 +97,12 @@ public class ItemList extends SherlockFragmentActivity implements
 	public static List<ParseObject> mNewLocations = null;
 	List<String> mFavoriteList = null;
 	
+	public static String mItemName = null;
+	public static String mQuantity = null;
+	public static String mItemId = null;
+	
+	public ShoppingItem mSItem;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -103,19 +113,14 @@ public class ItemList extends SherlockFragmentActivity implements
 		mActionBar.setDisplayShowTitleEnabled(false);
 		mActionBar.setDisplayShowHomeEnabled(false);
 		
-		//mItemAdapter.setTextKey(ItemList.ITEM_KEY_NAME);
-		
 		mListView = (ListView) findViewById(R.id.itemlist);
 		mListView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				ParseObject object = mItemAdapter.getItem(position);
-				ShoppingItem item = new ShoppingItem(object.getString(ITEM_KEY_DATE), object.getString(ITEM_KEY_NAME), 
-						(float)object.getDouble(ITEM_KEY_PRICE), (float)object.getDouble(ITEM_KEY_QUANTITY), object.getParseGeoPoint(ITEM_KEY_LOCATION));
+				ItemDetails.mItem = mItemAdapter.getItem(position);		
 				Intent intent = new Intent(getApplicationContext(), ItemDetails.class);
-				intent.putExtra(ITEM_CLASS, new Gson().toJson(item));
 				startActivity(intent);
 			}
 			
@@ -239,17 +244,17 @@ public class ItemList extends SherlockFragmentActivity implements
 	}
 	
 	protected void updateItemListAdapter() {
-		if(mFavorites) {
-			mFavoriteList = Login.mCurrentUser.getList(ItemList.USER_KEY_FAVORITES);
-	    }
+
+		mFavoriteList = Login.mCurrentUser.getList(ItemList.USER_KEY_FAVORITES);
+
 		mItemAdapter =
 				  new ParseQueryAdapter<ParseObject>(this, new ParseQueryAdapter.QueryFactory<ParseObject>() {
 				    public ParseQuery<ParseObject> create() {
 				      // Here we can configure a ParseQuery to our heart's desire.
 					      ParseQuery query = new ParseQuery(ItemList.ITEM_CLASS);
 					      query.whereEqualTo(ITEM_KEY_LOCATION, mParseLocation);
-					      if(mFavorites) {
-					      query.whereContainedIn(ItemList.ITEM_KEY_ID, mFavoriteList);
+					      if(mFavorites && mFavoriteList != null) {
+					    	  query.whereContainedIn(ItemList.ITEM_KEY_ID, mFavoriteList);
 					      }
 					      return query;
 					    }
@@ -264,17 +269,28 @@ public class ItemList extends SherlockFragmentActivity implements
 				  // populating the main TextView/ImageView.
 				  // The IDs in your custom layout must match what ParseQueryAdapter expects
 				  // if it will be populating a TextView or ImageView for you.
-				  super.getItemView(object, v, parent);
+				  //super.getItemView(object, v, parent);
 				 
 				  // Do additional configuration before returning the View.
+				  	  CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkBox_favorite);
+				  	  String id = object.getObjectId();
+				  	  checkBox.setTag(id);
+				  	  Log.d("Check", (String) checkBox.getTag());
+				  	  if(mFavoriteList != null)
+				  		  checkBox.setChecked(mFavoriteList.contains(id));
+				  	  
 					  TextView itemName = (TextView) v.findViewById(R.id.textView_name);
 					  TextView priceView = (TextView) v.findViewById(R.id.textView_price);
 					  TextView unitPriceView = (TextView) v.findViewById(R.id.textView_pricePerUnit);
 					  List<Double> priceList = object.getList(ITEM_KEY_PRICE);
 					  Number price = priceList.get(priceList.size()-1);
-				      itemName.setText(object.getString(ItemList.ITEM_KEY_NAME));
+					  Double quantity = object.getDouble(ITEM_KEY_QUANTITY);
+					  String name = object.getString(ItemList.ITEM_KEY_NAME);
+				      itemName.setText(name + " (" + Double.toString(quantity) + ")");
 					  priceView.setText(Double.toString(price.doubleValue()));
-					  unitPriceView.setText(Double.toString(price.doubleValue() / object.getDouble(ITEM_KEY_QUANTITY)));
+					  unitPriceView.setText(Double.toString(price.doubleValue() / quantity));
+					  Button update = (Button) v.findViewById(R.id.button_update);
+					  update.setTag(new Update(name, Double.toString(quantity), id));
 					  return v;
 					}
 					
@@ -359,25 +375,74 @@ public class ItemList extends SherlockFragmentActivity implements
 		addLocationDialog.show(getSupportFragmentManager(), "dialog");
 	}
 	
+	public void addFavorite(View view) {
+		CheckBox checkbox = (CheckBox)view;
+		String itemId = (String) checkbox.getTag();
+		Log.d("Check", "Check: " + itemId);
+		if(checkbox.isChecked()) {
+			Login.mCurrentUser.addUnique(USER_KEY_FAVORITES, itemId);
+		}
+		else {
+			Login.mCurrentUser.removeAll(USER_KEY_FAVORITES, Arrays.asList(itemId));
+		}
+		Login.mCurrentUser.saveInBackground();
+	}
+	
+	public void updateItem(View view) {
+		Button update = (Button) view;
+		Update info = (Update) update.getTag();
+		ItemList.mItemName = info.name;
+		ItemList.mQuantity = info.quantity;
+		ItemList.mItemId = info.id;
+		AddItemDialogFragment addItemDialog = new AddItemDialogFragment();
+		addItemDialog.show(getSupportFragmentManager(), "dialog");
+	}
+	
 	@Override
-	public void onDialogPositiveClick(SherlockDialogFragment dialog, ShoppingItem sItem) {
+	public void onDialogPositiveClick(SherlockDialogFragment dialog, ShoppingItem sItem, boolean update) {
 		if(sItem.name != null && sItem.price > 0 && sItem.quantity > 0 && sItem.location != null) {
-			ParseObject itemEntry = new ParseObject(ItemList.ITEM_CLASS);
-			itemEntry.put(ItemList.ITEM_KEY_NAME, sItem.name);
-			itemEntry.add(ItemList.ITEM_KEY_PRICE, sItem.price);
-			itemEntry.put(ItemList.ITEM_KEY_QUANTITY, sItem.quantity);
-			itemEntry.put(ItemList.ITEM_KEY_LOCATION, mParseLocation);
-			itemEntry.add(ItemList.ITEM_KEY_DATE, sItem.date);
-			itemEntry.saveInBackground(new SaveCallback() {
-				   public void done(ParseException e) {
-				     if (e == null) {
-				    	 mListView.setAdapter(mItemAdapter);
-				     }
-				     else {
-				    	 Log.d("Error", e.getMessage() + " " + Integer.toString(e.getCode()));
-				     }
-				   }
-			});
+			if(update) {
+				ParseQuery<ParseObject> query = ParseQuery.getQuery(ItemList.ITEM_CLASS);
+				this.mSItem = sItem;
+				query.getInBackground(ItemList.mItemId, new GetCallback<ParseObject>() {
+				  public void done(ParseObject itemEntry, ParseException e) {
+				    if (e == null) {			      
+				    	itemEntry.put(ItemList.ITEM_KEY_NAME, mSItem.name);
+						itemEntry.add(ItemList.ITEM_KEY_PRICE, mSItem.price);
+						itemEntry.put(ItemList.ITEM_KEY_QUANTITY, mSItem.quantity);
+						itemEntry.add(ItemList.ITEM_KEY_DATE, mSItem.date);
+						itemEntry.saveInBackground(new SaveCallback() {
+							   public void done(ParseException e) {
+							     if (e == null) {
+							    	 mListView.setAdapter(mItemAdapter);
+							     }
+							     else {
+							    	 Log.d("Error", e.getMessage() + " " + Integer.toString(e.getCode()));
+							     }
+							   }
+						});	      
+				    }
+				  }
+				});
+			}
+			else {
+				ParseObject itemEntry = new ParseObject(ItemList.ITEM_CLASS);
+				itemEntry.put(ItemList.ITEM_KEY_NAME, sItem.name);
+				itemEntry.add(ItemList.ITEM_KEY_PRICE, sItem.price);
+				itemEntry.put(ItemList.ITEM_KEY_QUANTITY, sItem.quantity);
+				itemEntry.put(ItemList.ITEM_KEY_LOCATION, mParseLocation);
+				itemEntry.add(ItemList.ITEM_KEY_DATE, sItem.date);
+				itemEntry.saveInBackground(new SaveCallback() {
+					   public void done(ParseException e) {
+					     if (e == null) {
+					    	 mListView.setAdapter(mItemAdapter);
+					     }
+					     else {
+					    	 Log.d("Error", e.getMessage() + " " + Integer.toString(e.getCode()));
+					     }
+					   }
+				});
+			}
 		}
 	}
 
@@ -406,6 +471,16 @@ public class ItemList extends SherlockFragmentActivity implements
 			   }
 			});
 			
+		}
+	}
+	
+	private class Update {
+		public String name, quantity, id;
+		
+		public Update(String name, String quantity, String id) {
+			this.name = name;
+			this.quantity = quantity;
+			this.id = id;
 		}
 	}
 }

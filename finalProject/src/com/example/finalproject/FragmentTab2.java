@@ -15,7 +15,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class FragmentTab2 extends SherlockFragment {
 
 	public GraphicalView mChartView;
-	private AverageTemperatureChart mChart = new AverageTemperatureChart();
+	private PriceChart mChart = new PriceChart();
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -26,9 +26,10 @@ public class AddItemDialogFragment extends SherlockDialogFragment{
 	EditText mPriceText;
 	EditText mQuantityText;
 	TextView mDateView;
+	boolean mUpdate = false;
 	
 	public interface NoticeDialogListener {
-        public void onDialogPositiveClick(SherlockDialogFragment dialog, ShoppingItem sItem);
+        public void onDialogPositiveClick(SherlockDialogFragment dialog, ShoppingItem sItem, boolean update);
         public void onDialogNegativeClick(SherlockDialogFragment dialog);
     }
 	
@@ -62,7 +63,13 @@ public class AddItemDialogFragment extends SherlockDialogFragment{
 		mItemText = (EditText) modifyView.findViewById(R.id.editText_item);
 		mPriceText = (EditText) modifyView.findViewById(R.id.editText_price);
 		mQuantityText = (EditText) modifyView.findViewById(R.id.editText_quantity);
-		
+		if(ItemList.mItemName != null) {
+			mItemText.setText(ItemList.mItemName);
+			mQuantityText.setText(ItemList.mQuantity);
+			ItemList.mItemName = null;
+			ItemList.mQuantity = null;
+			mUpdate = true;
+		}
 		builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
 				
 				@Override
@@ -73,7 +80,7 @@ public class AddItemDialogFragment extends SherlockDialogFragment{
 											 mItemText.getText().toString(), 
 											 Float.parseFloat(mPriceText.getText().toString()),
 											 Float.parseFloat(mQuantityText.getText().toString()),
-											 new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude())));
+											 new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude())), mUpdate);
 				}
 			})
 			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

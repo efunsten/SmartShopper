@@ -21,11 +21,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
@@ -107,7 +109,7 @@ public class ItemList extends SherlockFragmentActivity implements
 	protected double mUnitPriceColor;
 	protected TextView mPriceView;
 	protected TextView mUnitPriceView;
-	
+
 	public ShoppingItem mSItem;
 	
 	@Override
@@ -270,7 +272,7 @@ public class ItemList extends SherlockFragmentActivity implements
 	}
 	
 	protected void updateItemListAdapter() {
-
+		Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
 		mFavoriteList = Login.mCurrentUser.getList(ItemList.USER_KEY_FAVORITES);
 
 		mItemAdapter =
@@ -479,8 +481,9 @@ public class ItemList extends SherlockFragmentActivity implements
 	
 	@Override
 	public void onDialogPositiveClick(SherlockDialogFragment dialog, ShoppingItem sItem, boolean update) {
-		if(sItem.name != null && sItem.price > 0 && sItem.quantity > 0 && sItem.location != null) {
+		if(sItem.name != null && !sItem.name.isEmpty() && sItem.price > 0 && sItem.quantity > 0 && sItem.location != null) {
 			if(update) {
+				Toast.makeText(getApplicationContext(), "Item updated", Toast.LENGTH_SHORT).show();
 				ParseQuery<ParseObject> query = ParseQuery.getQuery(ItemList.ITEM_CLASS);
 				this.mSItem = sItem;
 				query.getInBackground(ItemList.mItemId, new GetCallback<ParseObject>() {
@@ -505,6 +508,7 @@ public class ItemList extends SherlockFragmentActivity implements
 				});
 			}
 			else {
+				Toast.makeText(getApplicationContext(), "Item added", Toast.LENGTH_SHORT).show();
 				ParseObject itemEntry = new ParseObject(ItemList.ITEM_CLASS);
 				itemEntry.put(ItemList.ITEM_KEY_NAME, sItem.name);
 				itemEntry.add(ItemList.ITEM_KEY_PRICE, sItem.price);
@@ -523,6 +527,9 @@ public class ItemList extends SherlockFragmentActivity implements
 				});
 			}
 		}
+		else {
+			Toast.makeText(getApplicationContext(), "Error: Bad Input", Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	@Override
@@ -534,7 +541,7 @@ public class ItemList extends SherlockFragmentActivity implements
 	@Override
 	public void onDialogPositiveClick(SherlockDialogFragment dialog,
 			ShoppingLocation sLocation) {
-		if(sLocation.place != null & sLocation.address != null && sLocation.location != null) {
+		if(sLocation.place != null && !sLocation.place.isEmpty() && sLocation.address != null && !sLocation.address.isEmpty() && sLocation.location != null) {
 			ParseObject locationEntry = new ParseObject(ItemList.LOCATION_CLASS);
 			locationEntry.put(ItemList.LOCATION_KEY_PLACE, sLocation.place);
 			locationEntry.put(ItemList.LOCATION_KEY_ADDRESS, sLocation.address);
@@ -550,6 +557,9 @@ public class ItemList extends SherlockFragmentActivity implements
 			   }
 			});
 			
+		}
+		else {
+			Toast.makeText(getApplicationContext(), "Error: Bad Input", Toast.LENGTH_SHORT).show();
 		}
 	}
 	

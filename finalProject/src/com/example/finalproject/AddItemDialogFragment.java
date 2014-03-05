@@ -74,12 +74,17 @@ public class AddItemDialogFragment extends SherlockDialogFragment{
 				
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					
+					String val = mPriceText.getText().toString();
+					String val2 = mQuantityText.getText().toString();
+					if(val == null || val.isEmpty() || val2 == null || val2.isEmpty()) {
+						val = "-1";
+						val2 = "-1";
+					}
 					mListener.onDialogPositiveClick(AddItemDialogFragment.this, 
 							new ShoppingItem(mDateView.getText().toString(), 
 											 mItemText.getText().toString(), 
-											 Float.parseFloat(mPriceText.getText().toString()),
-											 Float.parseFloat(mQuantityText.getText().toString()),
+											 Float.parseFloat(val),
+											 Float.parseFloat(val2),
 											 new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude())), mUpdate);
 				}
 			})

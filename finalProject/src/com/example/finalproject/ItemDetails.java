@@ -48,6 +48,7 @@ public class ItemDetails extends SherlockFragmentActivity{
 	public static List<String> mDates = null;
 	public static List<Double> mPrices = null;
 	public static ParseObject mStore = null;
+	public static List<ParseObject> mStoreList = null;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {

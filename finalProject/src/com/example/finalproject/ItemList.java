@@ -23,6 +23,8 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -101,6 +103,11 @@ public class ItemList extends SherlockFragmentActivity implements
 	public static String mQuantity = null;
 	public static String mItemId = null;
 	
+	protected double mPriceColor;
+	protected double mUnitPriceColor;
+	protected TextView mPriceView;
+	protected TextView mUnitPriceView;
+	
 	public ShoppingItem mSItem;
 	
 	@Override
@@ -129,6 +136,7 @@ public class ItemList extends SherlockFragmentActivity implements
 		mLocationRequest = LocationRequest.create();
 		mLocationClient = new LocationClient(this, this, this);
 		mNewLocations = new ArrayList<ParseObject>();
+		ItemDetails.mStoreList = new ArrayList<ParseObject>();
 	}
 	
 	@Override
@@ -157,7 +165,7 @@ public class ItemList extends SherlockFragmentActivity implements
 			(new GetAddressTask(this)).execute(mLocation);
 			ParseGeoPoint point = new ParseGeoPoint(ItemList.mLocation.getLatitude(), ItemList.mLocation.getLongitude());
 			ParseQuery<ParseObject> query = ParseQuery.getQuery(LOCATION_CLASS);
-			query.whereWithinKilometers(LOCATION_KEY_GEOPOINT, point, 0.1);
+			query.whereWithinKilometers(LOCATION_KEY_GEOPOINT, point, 0.5);
 			
 			try {
 				mLocationList = query.find();
@@ -177,9 +185,27 @@ public class ItemList extends SherlockFragmentActivity implements
 			nearPlaces.add(0, location.getString(LOCATION_KEY_PLACE));
 		}
 		
+		if(mNewLocations != null) {
+			ItemDetails.mStoreList.addAll(mNewLocations);
+		}
+		if(mLocationList != null) {
+			ItemDetails.mStoreList.addAll(mLocationList);
+		}
+		
         if(mLocationList == null || mLocationList.size() == 0) {
         	nearPlaces.add("Select Location");
+        	menu.getItem(0).setEnabled(false);
         }
+        else {
+        	menu.getItem(0).setEnabled(true);
+        }
+        if(this.mFavorites) {
+        	menu.getItem(1).setIcon(R.drawable.rate_star_med_on);
+        }
+        else {
+        	menu.getItem(1).setIcon(R.drawable.rate_star_med_off);
+        }
+        
         nearPlaces.add("Other");
         nearPlaces.add("Add Location");
         mLocationAdapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_item, nearPlaces);
@@ -288,15 +314,61 @@ public class ItemList extends SherlockFragmentActivity implements
 					  String name = object.getString(ItemList.ITEM_KEY_NAME);
 				      itemName.setText(name + " (" + Double.toString(quantity) + ")");
 					  priceView.setText(Double.toString(price.doubleValue()));
-					  unitPriceView.setText(Double.toString(price.doubleValue() / quantity));
+					  unitPriceView.setText(String.format("%.2f", price.doubleValue() / quantity));
 					  Button update = (Button) v.findViewById(R.id.button_update);
 					  update.setTag(new Update(name, Double.toString(quantity), id));
+					  
+					  mPriceColor = price.doubleValue();
+					  mUnitPriceColor = price.doubleValue() / quantity;
+					  mPriceView = priceView;
+					  mUnitPriceView = unitPriceView;
+					  
+					  ParseQuery<ParseObject> query = ParseQuery.getQuery(ItemList.ITEM_CLASS);
+				        query.whereEqualTo(ItemList.ITEM_KEY_NAME, name);
+				        query.whereContainedIn(ItemList.ITEM_KEY_LOCATION, ItemDetails.mStoreList);
+				        query.setLimit(5);
+				        try {
+							List<ParseObject> itemList = query.find();
+							doneColor(itemList);
+						} catch (ParseException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
 					  return v;
 					}
 					
 				};
 	    mListView.setAdapter(mItemAdapter);
 	}
+	
+	public void doneColor(List<ParseObject> itemList) {
+    	double minPrice = mPriceColor, minUnitPrice = mUnitPriceColor;
+       
+    	for(ParseObject item : itemList) {
+    		List<Double> priceList = item.getList(ITEM_KEY_PRICE);
+    		Number price = priceList.get(priceList.size()-1);
+    		Double quantity = item.getDouble(ITEM_KEY_QUANTITY);
+    		if(price.doubleValue() < minPrice) {
+    			minPrice = price.doubleValue();
+    		}
+    		if(price.doubleValue()/quantity < minUnitPrice) {
+    			minUnitPrice = price.doubleValue()/quantity;
+    		}
+        }          
+    	if(mPriceColor <= minPrice) {
+    		mPriceView.setTextColor(Color.GREEN);
+    	}
+    	else {
+    		mPriceView.setTextColor(Color.RED);
+    	}
+    	if(mUnitPriceColor <= minUnitPrice) {
+    		mUnitPriceView.setTextColor(Color.GREEN);
+    	}
+    	else {
+    		mUnitPriceView.setTextColor(Color.RED);
+    	}
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -306,6 +378,13 @@ public class ItemList extends SherlockFragmentActivity implements
 			break;
 		case R.id.menu_favorites:
 			this.mFavorites = !this.mFavorites;
+			if(this.mFavorites) {
+				item.setIcon(R.drawable.rate_star_med_on);
+			}
+			else {
+				item.setIcon(R.drawable.rate_star_med_off);
+			}
+			
 			updateItemListAdapter();
 			break;
 		}

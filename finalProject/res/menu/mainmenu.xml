@@ -1,4 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_additem" android:showAsAction="ifRoom" android:visible="true" android:enabled="true" android:title="@string/additem_menu"></item>
+    <item android:id="@+id/menu_additem" 
+        android:showAsAction="ifRoom" 
+        android:visible="true" 
+        android:enabled="true" 
+        android:title="@string/additem_menu"
+        android:icon="@drawable/ic_input_add" />
     <item android:id="@+id/menu_favorites" android:showAsAction="ifRoom" android:visible="true" android:enabled="true" android:title="@string/favorites_menu"></item>
 </menu>

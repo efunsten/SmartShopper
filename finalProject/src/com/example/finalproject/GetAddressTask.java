@@ -21,7 +21,6 @@ public class GetAddressTask extends AsyncTask<Location, Void, String> {
         mContext = context;
     }
 
-    @Override
     protected String doInBackground(Location... params) {
         Geocoder geocoder =
                 new Geocoder(mContext, Locale.getDefault());

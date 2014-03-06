@@ -2,6 +2,7 @@ package com.example.finalproject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -59,6 +60,7 @@ public class Login extends SherlockActivity {
 						finish();
 				    } else {
 				      // Signup failed. Look at the ParseException to see what happened.
+				    	Log.d("Error", e.getMessage());
 				    }
 				  }
 				});

@@ -60,7 +60,7 @@ public class FragmentTab1 extends SherlockFragment {
                     table2.addView(firstRow);
                     
                 	for(ParseObject item : itemList) {
-                    	row = (TableRow) View.inflate(getSherlockActivity(), R.layout.table_row2, null);
+                    	row = (TableRow) View.inflate(mContext, R.layout.table_row2, null);
                         store = (TextView) row.findViewById(R.id.row_store);
                         quantity = (TextView) row.findViewById(R.id.row_quantity);
                         price = (TextView) row.findViewById(R.id.row_price2);

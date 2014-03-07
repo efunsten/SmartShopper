@@ -1102,19 +1102,16 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_dark=0x7f020086;
         public static final int common_signin_btn_text_pressed_light=0x7f020087;
         public static final int favorite=0x7f020088;
-<<<<<<< HEAD
         public static final int full_logo=0x7f020089;
-=======
-        public static final int ic_input_add=0x7f020089;
->>>>>>> 94cd377444ce086a7e1b7c05d1c84c00cc1bb0f0
-        public static final int ic_launcher=0x7f02008a;
-        public static final int ic_menu_refresh=0x7f02008b;
-        public static final int ic_plusone_medium_off_client=0x7f02008c;
-        public static final int ic_plusone_small_off_client=0x7f02008d;
-        public static final int ic_plusone_standard_off_client=0x7f02008e;
-        public static final int ic_plusone_tall_off_client=0x7f02008f;
-        public static final int rate_star_med_off=0x7f020090;
-        public static final int rate_star_med_on=0x7f020091;
+        public static final int ic_input_add=0x7f02008a;
+        public static final int ic_launcher=0x7f02008b;
+        public static final int ic_menu_refresh=0x7f02008c;
+        public static final int ic_plusone_medium_off_client=0x7f02008d;
+        public static final int ic_plusone_small_off_client=0x7f02008e;
+        public static final int ic_plusone_standard_off_client=0x7f02008f;
+        public static final int ic_plusone_tall_off_client=0x7f020090;
+        public static final int rate_star_med_off=0x7f020091;
+        public static final int rate_star_med_on=0x7f020092;
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f050040;
@@ -1172,35 +1169,24 @@ containing a value of this type.
         public static final int fragment_container=0x7f050047;
         public static final int homeAsUp=0x7f05000a;
         public static final int hybrid=0x7f050004;
-<<<<<<< HEAD
-        public static final int imageView1=0x7f050055;
-        public static final int itemlist=0x7f050048;
-        public static final int listMode=0x7f050006;
-        public static final int locationlist=0x7f05004e;
-        public static final int login_button=0x7f050053;
-=======
+        public static final int imageView1=0x7f050056;
         public static final int itemlist=0x7f05004c;
         public static final int linearLayout1=0x7f050048;
         public static final int listMode=0x7f050006;
         public static final int locationlist=0x7f05004f;
         public static final int login_button=0x7f050054;
->>>>>>> 94cd377444ce086a7e1b7c05d1c84c00cc1bb0f0
-        public static final int menu_additem=0x7f05005f;
-        public static final int menu_favorites=0x7f050060;
+        public static final int menu_additem=0x7f050060;
+        public static final int menu_favorites=0x7f050061;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-<<<<<<< HEAD
-        public static final int register_button=0x7f050054;
-=======
         public static final int register_button=0x7f050055;
->>>>>>> 94cd377444ce086a7e1b7c05d1c84c00cc1bb0f0
-        public static final int row_date=0x7f050057;
-        public static final int row_price=0x7f050058;
-        public static final int row_price2=0x7f05005d;
-        public static final int row_priceperunit=0x7f050059;
-        public static final int row_priceperunit2=0x7f05005e;
-        public static final int row_quantity=0x7f05005c;
-        public static final int row_store=0x7f05005b;
+        public static final int row_date=0x7f050058;
+        public static final int row_price=0x7f050059;
+        public static final int row_price2=0x7f05005e;
+        public static final int row_priceperunit=0x7f05005a;
+        public static final int row_priceperunit2=0x7f05005f;
+        public static final int row_quantity=0x7f05005d;
+        public static final int row_store=0x7f05005c;
         public static final int satellite=0x7f050002;
         public static final int showCustom=0x7f05000c;
         public static final int showHome=0x7f050009;
@@ -1208,8 +1194,8 @@ containing a value of this type.
         public static final int tabMode=0x7f050007;
         public static final int tableLayout1=0x7f050043;
         public static final int tableLayout2=0x7f050045;
-        public static final int tableRow1=0x7f050056;
-        public static final int tableRow2=0x7f05005a;
+        public static final int tableRow1=0x7f050057;
+        public static final int tableRow2=0x7f05005b;
         public static final int terrain=0x7f050003;
         public static final int textView1=0x7f050036;
         public static final int textView3=0x7f050038;
